@@ -42,7 +42,7 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1 class="display-4">Bem-vindo ao Sistema de Orçamentos maneiro funcionando</h1>
+            <h1 class="display-4">Bem-vindo ao Sistema de Orçamentos msdasdaneiro funcionando</h1>
             <p class="lead">Automatize seus processos de orçamento e aumente a eficiência do seu negócio.</p>
             <div class="mt-4">
                 <a href="#features" class="btn btn-light btn-lg me-3">Saiba Mais</a>
