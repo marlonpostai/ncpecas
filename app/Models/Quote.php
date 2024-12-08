@@ -30,10 +30,13 @@ class Quote extends Model
     {
         $year = now()->format('Y');
 
-        $lastQuote = static::whereYear('creation_date', $year)
+        // Busca o último número de orçamento, incluindo soft deletes
+        $lastQuote = static::withTrashed()
+            ->whereYear('creation_date', $year)
             ->latest('id')
             ->value('quote_number');
 
+        // Calcula o próximo número
         $nextNumber = $lastQuote ? (int)explode('-', $lastQuote)[0] + 1 : 1;
 
         return str_pad($nextNumber, 4, '0', STR_PAD_LEFT) . '-' . $year;

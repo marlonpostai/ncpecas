@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\QuoteResource\Pages;
-use App\Models\ProductService;
 use App\Models\Quote;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -38,9 +37,9 @@ class QuoteResource extends Resource
                         if ($state) {
                             $product = \App\Models\ProductService::find($state);
                             if ($product) {
-                                $set('unit_price', $product->price); // Define o Preço Unitário
+                                $set('unit_price', $product->price);
                             } else {
-                                $set('unit_price', 0); // Preço Unitário padrão
+                                $set('unit_price', 0);
                             }
                         }
                     }),
@@ -58,7 +57,6 @@ class QuoteResource extends Resource
                     ->required()
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set, $get) {
-                        // Recalcula o Valor Total ao alterar a quantidade
                         $set('total_amount', $get('unit_price') * $state);
                     }),
 
