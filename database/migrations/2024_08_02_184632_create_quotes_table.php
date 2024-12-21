@@ -18,6 +18,7 @@ return new class extends Migration
             $table->bigInteger('client_id')->index(); // FK para a tabela clients
             $table->bigInteger('user_id')->index(); // FK para a tabela users
             $table->decimal('total_amount', 10, 2); // Valor total do orçamento
+            $table->string('status')->default('aguardando_ap');
             $table->timestamps();
             $table->softDeletes();
         });

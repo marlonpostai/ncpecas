@@ -11,10 +11,10 @@ class ProductService extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name',        // Nome do produto/serviço
-        'description', // Descrição do produto/serviço
+        'name',
+        'description',
+        'price',
         'reference',
-        'price',       // Preço do produto/serviço
         'sku',
         'image_one',
         'image_two',

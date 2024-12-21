@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\QuoteStatus;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Quote extends Model
@@ -12,73 +13,17 @@ class Quote extends Model
 
     protected $fillable = [
         'quote_number',
-        'product_service_id',
-        'quantity',
-        'unit_price',
         'creation_date',
         'client_id',
         'user_id',
         'total_amount',
+        'product_service_id',
+        'status',
     ];
 
-    /**
-     * Método responsável por gerar o número único do orçamento.
-     *
-     * @return string
-     */
-    public static function generateQuoteNumber(): string
-    {
-        $year = now()->format('Y');
-
-        // Busca o último número de orçamento, incluindo soft deletes
-        $lastQuote = static::withTrashed()
-            ->whereYear('creation_date', $year)
-            ->latest('id')
-            ->value('quote_number');
-
-        // Calcula o próximo número
-        $nextNumber = $lastQuote ? (int)explode('-', $lastQuote)[0] + 1 : 1;
-
-        return str_pad($nextNumber, 4, '0', STR_PAD_LEFT) . '-' . $year;
-    }
-
-    /**
-     * Calcula o valor total do orçamento.
-     *
-     * @return void
-     */
-    public function calculateTotalAmount(): void
-    {
-        $this->total_amount = $this->quantity * $this->unit_price;
-    }
-
-    /**
-     * Evento para garantir que os dados sejam gerados corretamente antes de salvar.
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($quote) {
-            // Gera o número do orçamento automaticamente
-            if (empty($quote->quote_number)) {
-                $quote->quote_number = static::generateQuoteNumber();
-            }
-        });
-
-        static::saving(function ($quote) {
-            // Preenche o preço unitário automaticamente se não for preenchido
-            if (empty($quote->unit_price) && $quote->product_service_id) {
-                $product = \App\Models\ProductService::find($quote->product_service_id);
-                if ($product) {
-                    $quote->unit_price = $product->price;
-                }
-            }
-
-            // Calcula o valor total
-            $quote->calculateTotalAmount();
-        });
-    }
+    protected $casts = [
+        'status' => QuoteStatus::class,
+    ];
 
     public function client()
     {
@@ -93,5 +38,45 @@ class Quote extends Model
     public function productService()
     {
         return $this->belongsTo(ProductService::class);
+    }
+
+    public function quoteItems()
+    {
+        return $this->hasMany(QuoteItem::class);
+    }
+
+    public static function generateQuoteNumber(): string
+    {
+        $year = now()->format('Y');
+        $lastQuote = static::withTrashed()
+            ->whereYear('creation_date', $year)
+            ->latest('id')
+            ->value('quote_number');
+
+        $nextNumber = $lastQuote ? (int)explode('-', $lastQuote)[0] + 1 : 1;
+
+        return str_pad($nextNumber, 4, '0', STR_PAD_LEFT) . '-' . $year;
+    }
+
+    // Evento para gerar o quote_number automaticamente e calcular o total_amount
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($quote) {
+            if (empty($quote->quote_number)) {
+                $quote->quote_number = self::generateQuoteNumber();
+            }
+
+            // Define um valor padrão para o total_amount caso esteja vazio
+            $quote->total_amount = $quote->total_amount ?? 0.00;
+        });
+
+        static::saving(function ($quote) {
+            // Calcula o total_amount com base nos itens relacionados
+            $quote->total_amount = $quote->quoteItems->sum(function ($item) {
+                return $item->quantity * $item->unit_price;
+            });
+        });
     }
 }
