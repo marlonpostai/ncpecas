@@ -19,10 +19,14 @@ class Quote extends Model
         'total_amount',
         'product_service_id',
         'status',
+        'expected_payment_date',
+        'payment_received',
     ];
 
     protected $casts = [
         'status' => QuoteStatus::class,
+        'expected_payment_date' => 'date',
+        'payment_received' => 'boolean',
     ];
 
     public function client()

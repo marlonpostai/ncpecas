@@ -6,14 +6,12 @@ use App\Enums\QuoteStatus;
 use App\Filament\Resources\QuoteResource\Pages;
 use App\Filament\Resources\QuoteResource\RelationManagers\QuoteRelationManager;
 use App\Models\Quote;
-use App\Models\QuoteItem;
-use App\Models\ProductService;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -44,7 +42,7 @@ class QuoteResource extends Resource
                             ->disabled()
                             ->default(fn () => Quote::generateQuoteNumber()),
 
-                        Forms\Components\DatePicker::make('creation_date')
+                        DatePicker::make('creation_date')
                             ->label('Data de Criação')
                             ->default(now())
                             ->required(),
@@ -52,6 +50,7 @@ class QuoteResource extends Resource
                         Select::make('client_id')
                             ->label('Cliente')
                             ->relationship('client', 'name')
+                            ->preload()
                             ->searchable()
                             ->required(),
 
@@ -61,12 +60,17 @@ class QuoteResource extends Resource
                             ->disabled()
                             ->default(fn () => auth()->id()),
 
-                        Forms\Components\ToggleButtons::make('status')
+                        ToggleButtons::make('status')
                             ->options(QuoteStatus::class)
                             ->label('Status'),
+
+                        DatePicker::make('expected_payment_date')
+                            ->label('Data Prevista de Pagamento')
+                            ->hidden(fn ($get) => $get('status') !== QuoteStatus::ENTREGUE->value)
+                            ->default(fn () => now()->addDays(30)),
+
                     ]),
                 ]),
-
             ]);
     }
 
@@ -97,6 +101,11 @@ class QuoteResource extends Resource
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge(),
+
+                TextColumn::make('expected_payment_date')
+                    ->label('Data Prevista de Pagamento')
+                    ->date()
+                    ->sortable(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -109,6 +118,7 @@ class QuoteResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
+
     public static function getRelations(): array
     {
         return [

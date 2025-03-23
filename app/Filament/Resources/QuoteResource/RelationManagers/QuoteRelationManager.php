@@ -42,7 +42,7 @@ class QuoteRelationManager extends RelationManager
             Forms\Components\TextInput::make('quantity')
                 ->label('Quantidade')
                 ->required()
-                ->reactive()
+                ->live(debounce: 500)
                 ->afterStateUpdated(function (?string $state, Forms\Set $set, $get) {
                     $unitPrice = $get('unit_price');
                     $set('total_price', $state * $unitPrice);
