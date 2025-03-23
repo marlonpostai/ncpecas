@@ -18,6 +18,8 @@ jobs:
               username: root
               key: ${{secrets.PRIVATE_KEY}}
               script: "
+                cd /var/www/ncpecas;
+
                 git pull origin main;
 
                 php artisan optimize:clear;
