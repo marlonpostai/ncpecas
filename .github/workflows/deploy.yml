@@ -22,6 +22,8 @@ jobs:
 
                 git pull origin main;
 
+                php artisan migrate;
+
                 php artisan optimize:clear;
                 php artisan icons:clear;
                 php artisan filament:clear-cached-components;
