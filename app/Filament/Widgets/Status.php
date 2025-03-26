@@ -34,17 +34,31 @@ class Status extends BaseWidget
 
         return [
             Stat::make('Total de Orçamentos', $quoteCount)
-            ->description('Novos orçamentos realizados')
-            ->descriptionIcon('heroicon-o-clipboard-document-list', IconPosition::Before)
-            ->chart([11, 3, 12, 5, 17,1, 13, 2, 15])
-            ->color('success'),
+                ->description('Novos orçamentos realizados')
+                ->descriptionIcon('heroicon-o-clipboard-document-list', IconPosition::Before)
+                ->chart([13, 13, 13])
+                ->color('success'),
 
-            Stat::make('Aguardando Aprovação', $aguardando_apCount),
+            Stat::make('Aguardando Aprovação', $aguardando_apCount)
+            ->description('Em processo')
+            ->descriptionIcon('heroicon-o-clipboard-document-list', IconPosition::Before)
+            ->chart([12, 12, 12])
+            ->color('warning'),
             //Stat::make('Aprovado', $aprovadoCount),
             //Stat::make('Rejeitado', $rejeitadoCount),
-            Stat::make('Produtos Entregues', $entregueCount),
-            Stat::make('Resumo Financeiro', $financeresume),
+            Stat::make('Produtos Entregues', $entregueCount)
+            ->description('Completo')
+            ->descriptionIcon('heroicon-m-clipboard-document-check', IconPosition::Before)
+            ->chart([12, 12, 12])
+            ->color('info'),
 
+            Stat::make('Resumo Financeiro', $financeresume)
+                ->description('Receitas')
+                ->descriptionIcon('heroicon-m-banknotes', IconPosition::Before)
+                ->chart([12, 12, 12])
+                ->color('success'),
         ];
+
+
     }
 }
