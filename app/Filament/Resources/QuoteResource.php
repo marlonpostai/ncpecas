@@ -13,22 +13,20 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\ToggleButtons;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class QuoteResource extends Resource
 {
     protected static ?string $model = Quote::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
-
     protected static ?string $modelLabel = 'Orçamento';
-
     protected static ?string $pluralModelLabel = 'Orçamentos';
-
     protected static ?int $navigationSort = 1;
 
     public static function form(Forms\Form $form): Forms\Form
@@ -59,16 +57,25 @@ class QuoteResource extends Resource
                             ->relationship('user', 'name')
                             ->disabled()
                             ->default(fn () => auth()->id()),
+                    ]),
 
+                    Grid::make(1)->schema([
                         ToggleButtons::make('status')
                             ->options(QuoteStatus::class)
-                            ->label('Status'),
+                            ->label('Status')
+                            ->inline(), // Mantém os botões em uma única linha
+                    ]),
 
+                    Grid::make(2)->schema([
                         DatePicker::make('expected_payment_date')
                             ->label('Data Prevista de Pagamento')
                             ->hidden(fn ($get) => $get('status') !== QuoteStatus::ENTREGUE->value)
                             ->default(fn () => now()->addDays(30)),
 
+                        Toggle::make('payment_received')
+                            ->label('Pagamento Recebido')
+                            ->hidden(fn ($get) => $get('status') !== QuoteStatus::ENTREGUE->value)
+                            ->inline(false), // Deixa o toggle em linha com o label
                     ]),
                 ]),
             ]);
@@ -106,6 +113,10 @@ class QuoteResource extends Resource
                     ->label('Data Prevista de Pagamento')
                     ->date()
                     ->sortable(),
+
+                IconColumn::make('payment_received')
+                    ->label('Pagamento Recebido')
+                    ->boolean(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
