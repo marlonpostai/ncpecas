@@ -56,7 +56,8 @@ class QuoteRelationManager extends RelationManager
             Forms\Components\Toggle::make('apply_discount')
                 ->label('Aplicar Desconto')
                 ->default(false)
-                ->reactive(),
+                ->reactive()
+                ->inline(false),
 
             // Campo para desconto em porcentagem
             Forms\Components\TextInput::make('item_discount_percent')

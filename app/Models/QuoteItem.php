@@ -17,7 +17,7 @@ class QuoteItem extends Model
             'total_price',
             'apply_discount',
             'item_discount_percent',
-            'total_with_discount', // Inclua esta linha
+            'total_with_discount',
     ];
 
 
