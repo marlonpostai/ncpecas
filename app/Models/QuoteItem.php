@@ -42,6 +42,7 @@ class QuoteItem extends Model
         return $this->hasMany(QuoteItem::class);
     }
 
+
     protected static function boot()
     {
         parent::boot();

@@ -6,6 +6,7 @@ use App\Enums\QuoteStatus;
 use App\Filament\Resources\QuoteResource\Pages;
 use App\Filament\Resources\QuoteResource\RelationManagers\QuoteRelationManager;
 use App\Models\Quote;
+use App\Models\QuoteItem;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
@@ -90,6 +91,28 @@ class QuoteResource extends Resource
                     ->sortable()
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('quoteItems.total_with_discount')
+                    ->label('Pagamento Total')
+                    ->formatStateUsing(fn (string $state): string =>
+                        'R$ ' . number_format(array_sum(array_map('floatval', explode(',', $state))), 2, ',', '.')
+                    )
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('expected_payment_date')
+                    ->label('Previsão de Pagamento')
+                    ->date()
+                    ->sortable(),
+
+                IconColumn::make('payment_received')
+                    ->label('Pagamento Recebido')
+                    ->boolean()
+                    ->sortable(),
+
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge(),
+
                 TextColumn::make('creation_date')
                     ->label('Data de Criação')
                     ->date()
@@ -105,18 +128,6 @@ class QuoteResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('status')
-                    ->label('Status')
-                    ->badge(),
-
-                TextColumn::make('expected_payment_date')
-                    ->label('Data Prevista de Pagamento')
-                    ->date()
-                    ->sortable(),
-
-                IconColumn::make('payment_received')
-                    ->label('Pagamento Recebido')
-                    ->boolean(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),

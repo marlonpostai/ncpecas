@@ -48,7 +48,7 @@ class FinancialChartWidget extends ChartWidget
             'labels' => array_keys($monthlyTotals), // Meses no eixo X (ordenados)
             'datasets' => [
                 [
-                    'label' => 'Balanço Financeiro',
+                    'label' => 'Receitas',
                     'data' => array_values($monthlyTotals), // Valores somados por mês
                     'borderColor' => '#4CAF50',
                     'fill' => false,
@@ -66,10 +66,10 @@ class FinancialChartWidget extends ChartWidget
         return 'line'; // Mantendo o gráfico como linha
     }
 
-    public function getColumnSpan(): int|string|array
-        {
-            return 'full'; // Faz o gráfico ocupar toda a linha
-        }
+    // public function getColumnSpan(): int|string|array
+    //     {
+    //         return 'full'; // Faz o gráfico ocupar toda a linha
+    //     }
 
 
 }

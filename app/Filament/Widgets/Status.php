@@ -31,6 +31,16 @@ class Status extends BaseWidget
             2, ',', '.'
         );
 
+        // Calcular "A Receber"
+        $areceber = 'R$ ' . number_format(
+            Quote::where('status', QuoteStatus::ENTREGUE)
+                ->where('payment_received', false)
+                ->with('quoteItems')
+                ->get()
+                ->flatMap(fn($quote) => $quote->quoteItems)
+                ->sum('total_with_discount'),
+            2, ',', '.'
+        );
 
         return [
             Stat::make('Total de Orçamentos', $quoteCount)
@@ -40,25 +50,31 @@ class Status extends BaseWidget
                 ->color('success'),
 
             Stat::make('Aguardando Aprovação', $aguardando_apCount)
-            ->description('Em processo')
-            ->descriptionIcon('heroicon-o-clipboard-document-list', IconPosition::Before)
-            ->chart([12, 12, 12])
-            ->color('warning'),
-            //Stat::make('Aprovado', $aprovadoCount),
-            //Stat::make('Rejeitado', $rejeitadoCount),
-            Stat::make('Produtos Entregues', $entregueCount)
-            ->description('Completo')
-            ->descriptionIcon('heroicon-m-clipboard-document-check', IconPosition::Before)
-            ->chart([12, 12, 12])
-            ->color('info'),
+                ->description('Em processo')
+                ->descriptionIcon('heroicon-o-clipboard-document-list', IconPosition::Before)
+                ->chart([12, 12, 12, 30, 50])
+                ->color('warning'),
 
+            // Stat::make('Aprovado', $aprovadoCount),
+            // Stat::make('Rejeitado', $rejeitadoCount),
+            // Stat::make('Produtos Entregues', $entregueCount)
+            //     ->description('Completo')
+            //     ->descriptionIcon('heroicon-m-clipboard-document-check', IconPosition::Before)
+            //     ->chart([12, 12, 12, 30, 50])
+            //     ->color('info'),
             Stat::make('Resumo Financeiro', $financeresume)
                 ->description('Receitas')
                 ->descriptionIcon('heroicon-m-banknotes', IconPosition::Before)
-                ->chart([12, 12, 12])
+                ->chart([12, 12, 12, 30, 50])
                 ->color('success'),
+
+            Stat::make('A Receber', $areceber)
+                ->description('Valores pendentes de pagamento')
+                ->descriptionIcon('heroicon-m-banknotes', IconPosition::Before)
+                ->chart([12, 12, 12, 30, 50])
+                ->color('info'),
+
+
         ];
-
-
     }
 }
