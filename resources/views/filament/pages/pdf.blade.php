@@ -267,7 +267,7 @@
         <div id="container">
             <div id="header">
                 <div id="logo">
-                    <img src="http://placehold.it/230x70&text=logo" alt="">
+                    <img src="{{ public_path('images/logo.png') }}" alt="Logo" style="width: 75px; height: auto;">
                 </div>
                 <div id="reference">
                     <h3><strong>ORÇAMENTO</strong></h3>
