@@ -30,6 +30,11 @@ jobs:
 
                 composer install --optimize-autoloader --no-dev;
 
+                php artisan storage:link;
+
+                chmod -R 775 storage bootstrap/cache;
+                chown -R www-data:www-data storage bootstrap/cache;
+
                 sudo systemctl restart php8.3-fpm
 
                 php artisan icons:cache;
