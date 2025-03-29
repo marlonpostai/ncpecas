@@ -63,7 +63,7 @@ class Status extends BaseWidget
             //     ->chart([12, 12, 12, 30, 50])
             //     ->color('info'),
             Stat::make('Resumo Financeiro', $financeresume)
-                ->description('Receitas')
+                ->description('Receita Bruta')
                 ->descriptionIcon('heroicon-m-banknotes', IconPosition::Before)
                 ->chart([12, 12, 12, 30, 50])
                 ->color('success'),

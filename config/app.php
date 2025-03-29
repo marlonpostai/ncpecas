@@ -15,6 +15,10 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+
+
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -81,6 +85,11 @@ return [
     'locale' => 'pt_BR',
 
     'faker_locale' => 'pt_BR',
+
+
+
+
+
 
 
     /*
