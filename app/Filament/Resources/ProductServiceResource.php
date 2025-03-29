@@ -46,6 +46,7 @@ class ProductServiceResource extends Resource
                     ->image()
                     ->disk('public')
                     ->directory('product_images')
+                    ->visibility('public')
                     ->required(),
 
                 // Campo para a segunda imagem
@@ -53,7 +54,8 @@ class ProductServiceResource extends Resource
                     ->label('Image Two')
                     ->image()
                     ->disk('public')
-                    ->directory('product_images'),
+                    ->directory('product_images')
+                    ->visibility('public'),
             ]);
     }
 
