@@ -20,7 +20,7 @@ class ProductServiceResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Produtos';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
@@ -44,8 +44,7 @@ class ProductServiceResource extends Resource
                 Forms\Components\FileUpload::make('image_one')
                     ->label('Image One')
                     ->image()
-                    ->disk('public')
-                    ->directory('product_images')
+                    ->disk('product_images') // Aqui utiliza o disco customizado
                     ->visibility('public')
                     ->required(),
 
@@ -53,8 +52,7 @@ class ProductServiceResource extends Resource
                 Forms\Components\FileUpload::make('image_two')
                     ->label('Image Two')
                     ->image()
-                    ->disk('public')
-                    ->directory('product_images')
+                    ->disk('product_images') // Aqui utiliza o disco customizado
                     ->visibility('public'),
             ]);
     }
@@ -71,7 +69,8 @@ class ProductServiceResource extends Resource
                     ->label('Price')
                     ->money('BRL', true),
                 Tables\Columns\ImageColumn::make('image_one')
-                    ->label('Image One'),
+                    ->label('Image One')
+                    ->disk('product_images'),
                 Tables\Columns\TextColumn::make('description')
                     ->label('Description'),
                 Tables\Columns\TextColumn::make('reference')

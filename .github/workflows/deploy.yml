@@ -6,41 +6,35 @@ on:
       - main
 
 jobs:
-  deploy:
-    name: Deploy to Digital Ocean
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Deploy
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: 128.199.7.75
-          port: 22
-          username: root
-          key: ${{secrets.PRIVATE_KEY}}
-          script: "
-            cd /var/www/ncpecas;
+   deploy:
+      name: Deploy to Digital Ocean
+      runs-on: ubuntu-22.04
+      steps:
+         - name: Deploy
+           uses: appleboy/ssh-action@v0.1.8
+           with:
+              host: 128.199.7.75
+              port: 22
+              username: root
+              key: ${{secrets.PRIVATE_KEY}}
+              script: "
+                cd /var/www/ncpecas;
 
-            # Tentando salvar alterações locais com git stash
-            git stash || true;
+                git pull origin main;
 
-            # Se preferir salvar alterações locais, use esta opção para commit
-            # git add . && git commit -m 'Salvando alterações locais' || true;
+                php artisan migrate;
 
-            git pull origin main;
+                php artisan optimize:clear;
+                php artisan icons:clear;
+                php artisan filament:clear-cached-components;
 
-            php artisan migrate;
+                composer install --optimize-autoloader --no-dev;
 
-            php artisan optimize:clear;
-            php artisan icons:clear;
-            php artisan filament:clear-cached-components;
+                sudo systemctl restart php8.3-fpm
 
-            composer install --optimize-autoloader --no-dev;
-
-            sudo systemctl restart php8.3-fpm;
-
-            php artisan icons:cache;
-            php artisan view:cache;
-            php artisan event:cache;
-            php artisan filament:cache-components;
-            php artisan optimize;
-          "
+                php artisan icons:cache;
+                php artisan view:cache;
+                php artisan event:cache;
+                php artisan filament:cache-components;
+                php artisan optimize;
+              "

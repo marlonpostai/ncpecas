@@ -154,6 +154,7 @@ class QuoteResource extends Resource
             'index' => Pages\ListQuotes::route('/'),
             'create' => Pages\CreateQuote::route('/create'),
             'edit' => Pages\EditQuote::route('/{record}/edit'),
+
         ];
     }
 
